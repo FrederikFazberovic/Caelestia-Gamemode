@@ -25,7 +25,6 @@ EXCLUDES="$CONF_DIR/exclude.conf"
 INTERVAL=2
 STOP_GRACE=3
 
-# Print non-empty, non-comment lines of a file
 read_list() {
     [[ -f $1 ]] && grep -vE '^[[:space:]]*(#|$)' "$1"
 }
@@ -36,8 +35,7 @@ running() {
     while IFS= read -r p; do
         if [[ -z $ex ]]; then
             pgrep -f -- "$p" >/dev/null && return 0
-        else
-            # keep only processes whose command line matches no exclude
+        else 
             pgrep -af -- "$p" | cut -d' ' -f2- | grep -qvE -- "$ex" && return 0
         fi
     done < <(read_list "$PATTERNS")
