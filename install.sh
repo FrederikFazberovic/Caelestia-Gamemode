@@ -10,24 +10,37 @@ mkdir -p "$BIN_DIR" "$USER_HOME/.config/systemd/user" "$CONF_DIR"
 
 # Default config
 mkdir -p "$CONF_DIR"
-[[ -f "$CONF_DIR/patterns.conf" ]] || printf '%s\n' 'steam-launch-wrapper' 'reaper SteamLaunch' 'minecraft' >~/.config/caelestia-gamemode/patterns.conf
-
-echo "Installed config into ~/.config/caelestia-gamemode/patterns.conf"
+[[ -f "$CONF_DIR/patterns.conf" ]] || printf '%s\n' 'steam-launch-wrapper' 'reaper SteamLaunch' 'minecraft' >"$CONF_DIR/patterns.conf"
+[[ -f $CONF_DIR/exclude.conf ]] || printf '%s\n' 'AppId=440' >"$CONF_DIR/exclude.conf"
+echo "Installed exclude config into $CONF_DIR/exclude.conf"
+echo "Installed patterns config into $CONF_DIR/patterns.conf"
 echo "To find out how to use it, look on README.md"
 
 # Watcher
 cat >"$BIN_DIR/caelestia-gamemode" <<'EOF'
 #!/usr/bin/env bash
-CONF="${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-gamemode/patterns.conf"
+CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-gamemode"
+PATTERNS="$CONF_DIR/patterns.conf"
+EXCLUDES="$CONF_DIR/exclude.conf"
 INTERVAL=2
 STOP_GRACE=3
 
+# Print non-empty, non-comment lines of a file
+read_list() {
+    [[ -f $1 ]] && grep -vE '^[[:space:]]*(#|$)' "$1"
+}
+
 running() {
-    local p
+    local p ex
+    ex=$(read_list "$EXCLUDES" | paste -sd'|')
     while IFS= read -r p; do
-        [[ -z $p || $p == \#* ]] && continue
-        pgrep -f -- "$p" >/dev/null && return 0
-    done < "$CONF"
+        if [[ -z $ex ]]; then
+            pgrep -f -- "$p" >/dev/null && return 0
+        else
+            # keep only processes whose command line matches no exclude
+            pgrep -af -- "$p" | cut -d' ' -f2- | grep -qvE -- "$ex" && return 0
+        fi
+    done < <(read_list "$PATTERNS")
     return 1
 }
 
@@ -48,7 +61,6 @@ while sleep "$INTERVAL"; do
 done
 EOF
 chmod +x "$BIN_DIR/caelestia-gamemode"
-
 echo "Installed watcher into $BIN_DIR/caelestia-gamemode"
 
 # Systemd service

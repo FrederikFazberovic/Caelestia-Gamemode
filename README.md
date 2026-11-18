@@ -22,6 +22,7 @@ Thats all!
   
 # Configuring  
 
+### Patterns
 Add process names or runners (e.g. `minecraft`, `steam-launch-wrapper`) to `~/.config/caelestia-gamemode/patterns.conf`, one per line. Some common processes come preconfigured.
 
 To find a process name, run:
@@ -30,8 +31,12 @@ To find a process name, run:
 ps aux | grep -E ""
 ```
 
-Put the pattern between the quotes to filter the output.
+Put the pattern between the quotes to filter the output.  
 
+### Exclude  
+To skip games or processes that a pattern matches but where you don't want gamemode (e.g. Team Fortress 2, where the mouse freaks out in gamemode), add them to `~/.config/caelestia-gamemode/exclude.conf`, one per line. A process is skipped if its command line matches any exclude.
+
+For Steam games, exclude by Steam App ID, because patterns like `steam-launch-wrapper` match every Steam game. The App ID appears in the process list as `AppId=<number>`, for example `AppId=440` is for Team Fortress 2 - thats there by default.  
 # Uninstalling  
 
 cd into cloned `Caelestia-Gamemode` folder, and run
