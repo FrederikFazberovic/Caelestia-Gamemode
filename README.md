@@ -2,6 +2,14 @@
 Its Auto Gamemode script for [Caelestia Dots](https://github.com/caelestia-dots/shell).   
 
 Read bellow, for configuring instructions.
+
+# Preview
+
+
+
+https://github.com/user-attachments/assets/51299a28-fa8a-4724-b3e3-e8ae551776a8
+
+
   
 # Install  
 ```
