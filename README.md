@@ -1,6 +1,6 @@
 # Caelestia-Gamemode  
 Its Auto Gamemode script for [Caelestia Dots](https://github.com/caelestia-dots/shell).   
-
+It watches for running processes and enables game mode while any of them are running, then disables it when they stop.  
 Read bellow, for configuring instructions.
 
 # Preview
