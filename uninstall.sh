@@ -10,7 +10,7 @@ systemctl --user stop --now caelestia-gamemode
 systemctl --user disable --now caelestia-gamemode
 rm -f "$SERVICE_FILE"
 
-echo "Removing converter script..."
+echo "Removing watcher..."
 rm -f "$BIN_DIR/caelestia-gamemode"
 
 echo "Removing config..."
